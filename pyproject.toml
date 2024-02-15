@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "openai-assistant"
+version = "0.1.0"
+description = "This project is my personal assistant that uses OpenAI's assitant to help me with my daily tasks."
+authors = ["Jettro Coenradie <jettro.coenradie@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openai = "^1.12.0"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
