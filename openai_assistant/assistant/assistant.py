@@ -6,14 +6,19 @@ class Assistant:
         self.client = client
         self.assistant_id = assistant_id
         self.__load_assistant()
+        self.tools = {}
 
-    def register_function(self, tool: dict):
+    def register_function(self, tool_definition: dict, tool_reference):
         function_tool = {
             "type": "function",
-            "function": tool
+            "function": tool_definition
         }
         self.client.beta.assistants.update(self.assistant_id, tools=[function_tool])
-        print(f"Registered function {tool['name']}")
+        self.tools[tool_definition["name"]] = tool_reference
+        print(f"Registered function {tool_definition['name']}")
+
+    def registered_tools(self):
+        return self.tools
 
     def __load_assistant(self):
         try:

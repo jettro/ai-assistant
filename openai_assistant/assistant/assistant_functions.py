@@ -1,6 +1,7 @@
-add_grocery_to_shopping_list = {
+def_add_grocery_to_shopping_list = {
     "name": "add_grocery_to_shopping_list",
-    "description": "Add a grocery item to the shopping list, the result is ERROR or OK, you can use this to notify the user",
+    "description": "Add a grocery item to the shopping list. The shopping list is a list that I use when going to the "
+                   "store to buy stuff. The result is ERROR or OK, you can use this to notify the user",
     "parameters": {
         "type": "object",
         "properties": {
@@ -17,7 +18,7 @@ add_grocery_to_shopping_list = {
     }
 }
 
-set_alarm_clock = {
+def_set_alarm_clock = {
     "name": "set_alarm_clock",
     "description": "Set an alarm clock, the result is ERROR or OK, you can use this to notify the user",
     "parameters": {
@@ -35,3 +36,48 @@ set_alarm_clock = {
         "required": ["time"]
     }
 }
+
+def_order_food_delivery = {
+    "name": "order_food_delivery",
+    "description": "Order food or drinks for delivery, the result is ERROR or OK, you can use this to notify the user",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "product_name": {
+                "type": "string",
+                "description": "The name of the product to order"
+            },
+            "quantity": {
+                "type": "integer",
+                "description": "The quantity of the product to order"
+            }
+        },
+        "required": ["product_name", "quantity"]
+    }
+}
+
+def_finalize_order_food_delivery = {
+    "name": "finalize_order_food_delivery",
+    "description": "Finalize the order of food or drinks for delivery, the result is ERROR or OK, you can use this to "
+                   "notify the user",
+}
+
+
+def set_alarm_clock(time: str, date: str = None):
+    print(f"Setting alarm clock to {time} on {date}")
+    return "OK"
+
+
+def add_grocery_to_shopping_list(grocery_name: str, quantity: int):
+    print(f"Adding {quantity} {grocery_name} to the shopping list")
+    return "OK"
+
+
+def order_food_delivery(product_name: str, quantity: int):
+    print(f"Ordering {quantity} {product_name}")
+    return "OK"
+
+
+def finalize_order_food_delivery():
+    print(f"Finalizing order")
+    return "OK"

@@ -1,13 +1,19 @@
+import json
 import time
 
 from openai import OpenAI, NotFoundError
 
+from openai_assistant.assistant.assistant import Assistant
+
+
 # TODO Maybe we should add the available tools to the thread, so we can use them in the run_against_assistant method
 
+
 class Thread:
-    def __init__(self, client: OpenAI, thread_id: str):
+    def __init__(self, client: OpenAI, thread_id: str, assistant: Assistant):
         self.client = client
         self.thread_id = thread_id
+        self.assistant = assistant
         self.__load_thread()
 
     def print_messages(self):
@@ -22,10 +28,10 @@ class Thread:
             content=message
         )
 
-    def run_against_assistant(self, assistant_id: str):
+    def run_against_assistant(self):
         run = self.client.beta.threads.runs.create(
             thread_id=self.thread_id,
-            assistant_id=assistant_id
+            assistant_id=self.assistant.assistant_id
         )
         run = self.__verify_run(run_id=run.id)
         if run.status == "requires_action":
@@ -35,10 +41,21 @@ class Thread:
                 print(f"Tool call: {tool_call}")
             tool_outputs = []
             for tool_call in tools_calls:
-                tool_outputs.append({
-                    "tool_call_id": tool_call.id,
-                    "output": "OK"
-                })
+                if tool_call.function.name in self.assistant.tools.keys():
+                    tool = self.assistant.tools[tool_call.function.name]
+                    arguments = json.loads(tool_call.function.arguments)
+                    result = tool(**arguments)
+                    tool_outputs.append({
+                        "tool_call_id": tool_call.id,
+                        "output": result
+                    })
+                else:
+                    print(f"Tool {tool_call.function.name} is not available: {tool_call}")
+
+                    tool_outputs.append({
+                        "tool_call_id": tool_call.id,
+                        "output": "ERROR: Tool not available"
+                    })
             run = self.client.beta.threads.runs.submit_tool_outputs(
                 run_id=run.id,
                 thread_id=self.thread_id,
@@ -52,8 +69,8 @@ class Thread:
     def cancel_runs(self):
         runs = self.client.beta.threads.runs.list(thread_id=self.thread_id)
         for run in runs:
-            print(f"Canceling run {run.id} with status {run.status}")
             if run.status not in ["cancelled", "completed", "expired"]:
+                print(f"Canceling run {run.id} with status {run.status}")
                 self.client.beta.threads.runs.cancel(run_id=run.id, thread_id=self.thread_id)
 
     def __verify_run(self, run_id: str):
