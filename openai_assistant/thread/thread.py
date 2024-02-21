@@ -1,12 +1,12 @@
 import json
+import logging
 import time
 
 from openai import OpenAI, NotFoundError
+from openai.types.beta.threads import Run
 
 from openai_assistant.assistant.assistant import Assistant
-
-
-# TODO Maybe we should add the available tools to the thread, so we can use them in the run_against_assistant method
+from openai_assistant.thread import logger_thread
 
 
 class Thread:
@@ -16,81 +16,95 @@ class Thread:
         self.assistant = assistant
         self.__load_thread()
 
-    def print_messages(self):
-        messages = self.client.beta.threads.messages.list(self.thread_id)
+    def print_messages(self, before: str = None):
+        messages = self.client.beta.threads.messages.list(self.thread_id, limit=4, before=before)
         for message in messages:
-            print(f"Message: {message}")
+            logger_thread.info(f"Message: {message}")
 
     def add_new_message(self, message: str):
-        self.client.beta.threads.messages.create(
-            thread_id=self.thread_id,
-            role="user",
-            content=message
-        )
+        logger_thread.debug(f"Adding message '{message}' to thread {self.thread_id}")
+        thread_message = self.client.beta.threads.messages.create(thread_id=self.thread_id, role="user",
+                                                                  content=message)
+        return thread_message.id
 
     def run_against_assistant(self):
+        logger_thread.debug(f"Running assistant against thread {self.thread_id}")
         run = self.client.beta.threads.runs.create(
             thread_id=self.thread_id,
             assistant_id=self.assistant.assistant_id
         )
-        run = self.__verify_run(run_id=run.id)
-        if run.status == "requires_action":
-            print(f"Run {run.id} requires action")
-            tools_calls = run.required_action.submit_tool_outputs.tool_calls
-            for tool_call in tools_calls:
-                print(f"Tool call: {tool_call}")
-            tool_outputs = []
-            for tool_call in tools_calls:
-                if tool_call.function.name in self.assistant.tools.keys():
-                    tool = self.assistant.tools[tool_call.function.name]
-                    arguments = json.loads(tool_call.function.arguments)
-                    result = tool(**arguments)
-                    tool_outputs.append({
-                        "tool_call_id": tool_call.id,
-                        "output": result
-                    })
-                else:
-                    print(f"Tool {tool_call.function.name} is not available: {tool_call}")
-
-                    tool_outputs.append({
-                        "tool_call_id": tool_call.id,
-                        "output": "ERROR: Tool not available"
-                    })
-            run = self.client.beta.threads.runs.submit_tool_outputs(
-                run_id=run.id,
-                thread_id=self.thread_id,
-                tool_outputs=tool_outputs
-            )
-            self.__verify_run(run_id=run.id)
-        else:
-            print(f"Run {run.id} completed with result: {run}")
-            return run
+        return self.__handle_run(run=run)
 
     def cancel_runs(self):
         runs = self.client.beta.threads.runs.list(thread_id=self.thread_id)
         for run in runs:
             if run.status not in ["cancelled", "completed", "expired"]:
-                print(f"Canceling run {run.id} with status {run.status}")
+                logger_thread.debug(f"Canceling run {run.id} with status {run.status}")
                 self.client.beta.threads.runs.cancel(run_id=run.id, thread_id=self.thread_id)
 
-    def __verify_run(self, run_id: str):
+    def print_run_info(self, run_id: str):
         run = self.client.beta.threads.runs.retrieve(run_id=run_id, thread_id=self.thread_id)
-        print(f"Run: {run.id}, status: {run.status}")
+        logger_thread.info(f"Run: {run}")
+
+    def __handle_run(self, run: Run) -> Run:
+        run = self.__verify_run(run_id=run.id)
+
+        while run.status == "requires_action":
+            logger_thread.debug(f"Run {run.id} requires action")
+            tools_calls = run.required_action.submit_tool_outputs.tool_calls
+
+            tool_outputs = []
+            for tool_call in tools_calls:
+                logger_thread.info(
+                    f"Calling function {tool_call.function.name} with arguments {tool_call.function.arguments}")
+                result = self.assistant.call_tool(tool_call.function.name, json.loads(tool_call.function.arguments))
+                logger_thread.debug(f"Result of call: {result}")
+                tool_outputs.append({
+                    "tool_call_id": tool_call.id,
+                    "output": result
+                })
+            run = self.client.beta.threads.runs.submit_tool_outputs(
+                run_id=run.id,
+                thread_id=self.thread_id,
+                tool_outputs=tool_outputs
+            )
+            run = self.__verify_run(run_id=run.id)
+
+        logger_thread.info(f"Handle run {run.id} completed with result: {run}")
+        return run
+
+    def __verify_run(self, run_id: str):
+        """
+        Verify the status of the run, if it is still in progress, wait for a second and try again
+        :param run_id: identifier of the run
+        :return: the run
+        """
+        run = self.client.beta.threads.runs.retrieve(run_id=run_id, thread_id=self.thread_id)
+        logger_thread.debug(f"Run: {run.id}, status: {run.status}")
         if run.status not in ["in_progress", "queued"]:
             return run
         time.sleep(1)
         return self.__verify_run(run_id=run.id)
 
     def __load_thread(self):
+        """
+        Load the thread from the OpenAI API using the thread_id to see if it exists
+        :return: Nothing
+        """
         try:
             thread = self.client.beta.threads.retrieve(self.thread_id)
-            print(f"Obtained thread '{thread.id}'")
+            logger_thread.debug(f"Obtained thread '{thread.id}'")
         except NotFoundError as err:
-            print(f"Thread {self.thread_id} not found")
+            logger_thread.warn(f"Thread {self.thread_id} not found")
             raise err
 
     @staticmethod
     def create_thread(client: OpenAI):
+        """
+        Create a new Thread object wrapping the OpenAI thread using the OpenAI API.
+        :param client: client to talk to the OpenAI API
+        :return: Thread object was a wrapper for the OpenAI thread
+        """
         thread = client.beta.threads.create()
-        print(f"Created thread {thread.id}")
+        logger_thread.debug(f"Created thread {thread.id}")
         return Thread(client=client, thread_id=thread.id)

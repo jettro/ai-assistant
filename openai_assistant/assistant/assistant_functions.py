@@ -1,3 +1,5 @@
+from openai_assistant.assistant import logger_assistant
+
 def_add_grocery_to_shopping_list = {
     "name": "add_grocery_to_shopping_list",
     "description": "Add a grocery item to the shopping list. The shopping list is a list that I use when going to the "
@@ -64,20 +66,20 @@ def_finalize_order_food_delivery = {
 
 
 def set_alarm_clock(time: str, date: str = None):
-    print(f"Setting alarm clock to {time} on {date}")
+    logger_assistant.info(f"Setting alarm clock to {time} on {date}")
     return "OK"
 
 
 def add_grocery_to_shopping_list(grocery_name: str, quantity: int):
-    print(f"Adding {quantity} {grocery_name} to the shopping list")
+    logger_assistant.info(f"Adding {quantity} {grocery_name} to the shopping list")
     return "OK"
 
 
 def order_food_delivery(product_name: str, quantity: int):
-    print(f"Ordering {quantity} {product_name}")
+    logger_assistant.info(f"Ordering {quantity} {product_name}")
     return "OK"
 
 
 def finalize_order_food_delivery():
-    print(f"Finalizing order")
+    logger_assistant.info(f"Finalizing order")
     return "OK"
