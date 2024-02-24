@@ -142,7 +142,8 @@ if __name__ == "__main__":
 
     thread = Thread(client=client, thread_id="thread_l9OFcoJw0uKYakpbVrhePtpG", assistant=assistant)
     thread.cancel_runs()
-    message_id = thread.add_new_message("Tomorrow I have a late appointment, therefore I can sleep longer, please set my alarm.")
+    message_id = thread.add_new_message("Tomorrow I have a late appointment, therefore I can sleep longer, please set "
+                                        "my alarm.")
     thread.run_against_assistant()
 
     thread.print_messages(before=message_id)

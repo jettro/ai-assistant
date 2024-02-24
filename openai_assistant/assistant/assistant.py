@@ -3,7 +3,7 @@ import importlib
 from openai import OpenAI, NotFoundError
 
 from openai_assistant.assistant import logger_assistant
-from openai_assistant.files.file import File
+from openai_assistant.assistant.file import File
 
 
 class Assistant:

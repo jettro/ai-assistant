@@ -1,12 +1,11 @@
 import json
-import logging
 import time
 
 from openai import OpenAI, NotFoundError
 from openai.types.beta.threads import Run
 
+from openai_assistant.assistant import logger_thread
 from openai_assistant.assistant.assistant import Assistant
-from openai_assistant.thread import logger_thread
 
 
 class Thread:
@@ -99,12 +98,13 @@ class Thread:
             raise err
 
     @staticmethod
-    def create_thread(client: OpenAI):
+    def create_thread(client: OpenAI, assistant: Assistant):
         """
         Create a new Thread object wrapping the OpenAI thread using the OpenAI API.
         :param client: client to talk to the OpenAI API
+        :param assistant: the assistant to run against
         :return: Thread object was a wrapper for the OpenAI thread
         """
         thread = client.beta.threads.create()
-        logger_thread.debug(f"Created thread {thread.id}")
-        return Thread(client=client, thread_id=thread.id)
+        logger_thread.info(f"Created thread {thread.id}")
+        return Thread(client=client, thread_id=thread.id, assistant=assistant)

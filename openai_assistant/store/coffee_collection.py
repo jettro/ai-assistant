@@ -1,7 +1,5 @@
 import weaviate.classes.config as wvc
 
-# Name,Price,Description,Ingredients,Ratio of Ingredients
-
 
 def coffee_weaviate_properties():
 
@@ -21,7 +19,7 @@ def coffee_weaviate_properties():
         wvc.Property(name="ingredients",
                      data_type=wvc.DataType.TEXT,
                      vectorize_property_name=False,
-                     skip_vectorization=False),
+                     skip_vectorization=True),
         wvc.Property(name="ratio_ingredients",
                      data_type=wvc.DataType.TEXT,
                      vectorize_property_name=False,

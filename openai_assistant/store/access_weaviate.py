@@ -24,7 +24,7 @@ class AccessWeaviate:
 
         return exists
 
-    def add_document(self, collection_name: str,  properties: dict):
+    def add_document(self, collection_name: str, properties: dict):
         logger_store.debug(f"Adding document to collection {collection_name}")
         self.client.collections.get(collection_name).data.insert(
             uuid=uuid.uuid4(),
@@ -42,7 +42,7 @@ class AccessWeaviate:
             name=collection_name,
             properties=properties,
             vectorizer_config=wvc.config.Configure.Vectorizer.text2vec_openai(
-                model="text-embedding-3-small",
+                model="text-embedding-3-large",
                 type_="text",
             )
         )
@@ -65,3 +65,19 @@ class AccessWeaviate:
         for collection in collections:
             print(f"Available collection: {collection}")
         print(self.client.collections.export_config(name=collection_name))
+
+    def query_collection(self, question: str, collection_name: str, max_results: int = 2):
+        logger_store.debug(f"Query collection based on user input {question}")
+        collection = self.client.collections.get(name=collection_name)
+        return collection.query.hybrid(query=question,
+                                       limit=max_results,
+                                       alpha=0.5,
+                                       fusion_type=wvc.query.HybridFusion.RELATIVE_SCORE,
+                                       return_metadata=wvc.query.MetadataQuery(
+                                           distance=True, score=True)
+                                       )
+
+    def loop_over_collection(self, collection_name: str, properties: list):
+        collection = self.client.collections.get(name=collection_name)
+        return [{key: item.properties[key] for key in properties} for item in collection.iterator()]
+
