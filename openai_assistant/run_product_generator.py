@@ -3,8 +3,8 @@ import os
 from openai import OpenAI
 
 if __name__ == "__main__":
-
     from dotenv import load_dotenv
+
     load_dotenv()
 
     client = OpenAI(
@@ -14,8 +14,13 @@ if __name__ == "__main__":
     completion = client.chat.completions.create(
         model="gpt-4-turbo-preview",
         messages=[
-            {"role": "system", "content": "You are a maintainer of product data. You assist users in generating product data."},
-            {"role": "user", "content": "I want ten products with the following attributes: name, price, and description. They should be groceries that people need on a regular basis. The output should be ready to be written to a text file. Only output the products no additional comments or information."},
+            {"role": "system", "content": "You are the manager of a coffee shop."},
+            {"role": "user", "content": "Create a list "
+                                        "of products that the shop should sell. You need to create a list of twenty "
+                                        "products with the following attributes: name, price, description, "
+                                        "ingredients and the ratio of ingredients. The "
+                                        "output should be ready to be written to a text file. Only output the "
+                                        "asked data no additional comments or information."},
         ]
     )
 

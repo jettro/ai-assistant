@@ -1,0 +1,24 @@
+name,price,description,ingredients,ration_ingredients
+Classic Americano,3.50,"A strong and simple espresso-based drink, diluting a shot of espresso with hot water, giving it a similar strength to, but different flavor from, traditionally brewed coffee.","Espresso (1 part), Hot Water (2 parts)",1:2
+Vanilla Latte,4.75,A creamy blend of espresso and steamed milk with a sweet touch of vanilla syrup.,"Espresso (1 part), Steamed Milk (3 parts), Vanilla Syrup (0.5 part)",1:3:0.5
+Caramel Macchiato,5.00,"Delicious layers of foam, espresso, steamed milk, and a caramel drizzle on top.","Espresso (1 part), Steamed Milk (2 parts), Foam (1 part), Caramel Syrup (0.5 part)",1:2:1:0.5
+Mocha,4.50,"A delightful mix of chocolate, espresso, and steamed milk, topped with whipped cream.","Espresso (1 part), Steamed Milk (2 parts), Chocolate Syrup (1 part), Whipped Cream (0.5 part)",1:2:1:0.5
+Cappuccino,4.00,"A classic Italian coffee drink with equal parts of espresso, steamed milk, and milk foam.","Espresso (1 part), Steamed Milk (1 part), Milk Foam (1 part)",1:1:1
+Chai Latte,4.25,"A spiced tea beverage mixed with steamed milk, offering a perfect balance of sweet and spicy.","Chai Concentrate (1 part), Steamed Milk (2 parts)",1:2
+Iced Coffee,3.75,"Freshly brewed coffee cooled down and poured over ice, perfect for hot days.","Brewed Coffee (2 parts), Ice (1 part)",2:1
+Matcha Green Tea Latte,4.75,"A smooth blend of ceremonial-grade matcha powder and steamed milk, lightly sweetened.","Matcha Powder (0.5 part), Steamed Milk (3 parts), Sugar (0.25 part)",0.5:3:0.25
+Espresso,3.00,"A strong, concentrated coffee brewed by forcing a small amount of nearly boiling water through finely-ground coffee beans.",Espresso shot (1 part),1
+Iced Vanilla Latte,5.00,"Chilled espresso mixed with milk and sweet vanilla syrup, served over ice.","Espresso (1 part), Milk (2 parts), Vanilla Syrup (0.5 part), Ice (1 part)",1:2:0.5:1
+Hot Chocolate,3.75,"Rich chocolate drink made with milk, topped with whipped cream and chocolate shavings.","Milk (3 parts), Chocolate Syrup (1 part), Whipped Cream (0.5 part), Chocolate Shavings (0.25 part)",3:1:0.5:0.25
+Iced Matcha,4.50,Ceremonial-grade matcha powder whisked with water and served over ice.,"Matcha Powder (0.5 part), Cold Water (2 parts), Ice (1 part)",0.5:2:1
+Espresso Macchiato,3.75,A shot of espresso marked with a small amount of frothy milk on top.,"Espresso (1 part), Milk Foam (0.5 part)",1:0.5
+Iced Americano,4.00,"A refreshing iced version of the classic Americano, combining espresso and cold water.","Espresso (1 part), Cold Water (2 parts), Ice (1 part)",1:2:1
+Pumpkin Spice Latte,5.25,"A seasonal favorite, combining espresso, steamed milk, and pumpkin spice flavor, topped with whipped cream and pumpkin pie spices.","Espresso (1 part), Steamed Milk (2 parts), Pumpkin Spice Syrup (1 part), Whipped Cream (0.5 part)",1:2:1:0.5
+Flat White,4.25,"Originating from Australia, this coffee drink focuses on the harmony of espresso and steamed milk.","Espresso (2 parts), Steamed Milk (3 parts)",2:3
+Cold Brew Coffee,4.00,"Coarsely ground coffee steeped in cold water for an extended period, offering a smoother, milder flavor.","Cold Brew Concentrate (1 part), Cold Water (1 part), Ice (1 part)",1:1:1
+Lemonade,3.50,Freshly squeezed lemon juice balanced with water and sugar for a refreshing drink.,"Lemon Juice (1 part), Water (3 parts), Sugar (0.5 part)",1:3:0.5
+Iced Caramel Macchiato,5.25,"Chilled espresso mixed with milk and caramel syrup, served over ice.","Espresso (1 part), Milk (2 parts), Caramel Syrup (0.5 part), Ice (1 part)",1:2:0.5:1
+Iced Chai Latte,4.50,Chilled chai concentrate mixed with milk and served over ice for a refreshing spice-infused drink.,"Chai Concentrate (1 part), Milk (2 parts), Ice (1 part)",1:2:1
+Iced Mocha,4.75,"Chilled espresso mixed with milk and chocolate syrup, served over ice.","Espresso (1 part), Milk (2 parts), Chocolate Syrup (1 part), Ice (1 part)",1:2:1:1
+Herbal Tea,2.75,"A delicately brewed infusion of herbal tea leaves, offering a soothing and aromatic beverage.","Herbal Tea Leaves (1 part), Hot Water (4 parts)",1:4
+Hot Apple Cider,3.75,"Warm, spiced apple cider, perfect for chilly days or nights.","Apple Cider (4 parts), Cinnamon Stick (0.25 part), Cloves (0.1 part), Nutmeg (0.05 part)",4:0.25:0.1:0.05

@@ -83,8 +83,8 @@ class Assistant:
         for assistant in assistants:
             if assistant["name"] == name:
                 return Assistant(client=client, assistant_id=assistant["id"], tools_module_name=tools_module_name)
-
-        raise FileNotFoundError(f"Assistant {name} not found")
+        err_msg = f"Assistant {name} not found"
+        raise AssistantNotFoundError(err_msg)
 
     @staticmethod
     def list_assistants(client: OpenAI):
@@ -92,3 +92,9 @@ class Assistant:
         for assistant in assistants:
             logger_assistant.debug(f"Assistant id: {assistant['id']}, name: {assistant['name']}")
         return assistants
+
+
+class AssistantNotFoundError(Exception):
+    """ Assistant not found. """
+    def __init__(self, *args, **kwargs): # real signature unknown
+        pass
