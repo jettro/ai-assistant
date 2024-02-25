@@ -61,22 +61,21 @@ if __name__ == "__main__":
         thread = Thread(client=client, thread_id=st.session_state.thread_id, assistant=assistant)
 
     with col_content:
+        chat_messages = thread.load_messages()
+        if chat_messages:
+            chat_messages.reverse()
         with st.container(height=500):
             # Display chat messages from history on app rerun
-            chat_messages = thread.load_messages()
-            if chat_messages:
-                chat_messages.reverse()
             for message in chat_messages:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
 
-            if prompt := st.chat_input("Your message"):
-                thread.cancel_runs()
-                message_id = thread.add_new_message(prompt)
-                thread.run_against_assistant()
-                for message in thread.load_messages(before=message_id):
-                    with st.chat_message(message["role"]):
-                        st.markdown(message["content"])
+        if prompt := st.chat_input("Your message"):
+            thread.cancel_runs()
+            message_id = thread.add_new_message(prompt)
+            thread.run_against_assistant()
+            chat_messages.append(thread.load_messages(before=message_id))
+            st.experimental_rerun()
 
     with col_basket:
         st.write("Currently in your basket:")

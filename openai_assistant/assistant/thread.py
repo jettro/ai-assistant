@@ -80,7 +80,7 @@ class Thread:
             )
             run = self.__verify_run(run_id=run.id)
 
-        logger_thread.info(f"Handle run {run.id} completed with result: {run}")
+        logger_thread.info(f"Handle run {run.id} completed.")
         return run
 
     def __verify_run(self, run_id: str):
