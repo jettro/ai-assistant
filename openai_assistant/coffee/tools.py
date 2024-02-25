@@ -1,5 +1,7 @@
 import os
 
+import streamlit as st
+
 from openai_assistant.coffee import logger_coffee
 from openai_assistant.store.access_weaviate import AccessWeaviate
 
@@ -42,7 +44,7 @@ def_start_order = {
 
 def start_order(visitor_name: str):
     logger_coffee.info(f"Starting order for visitor {visitor_name}")
-
+    st.session_state.basket = []
     return "OK"
 
 
@@ -61,14 +63,14 @@ def_add_product_to_order = {
                 "description": "The quantity of the product to add to the order"
             }
         },
-        "required": ["product_name", "quantity"]
+        "required": ["thread_id", "product_name", "quantity"]
     }
 }
 
 
 def add_product_to_order(product_name: str, quantity: int):
     logger_coffee.info(f"Adding {quantity}x {product_name} to the order")
-
+    st.session_state.basket.append({"product_name": product_name, "quantity": quantity})
     return "OK"
 
 
@@ -106,10 +108,12 @@ def_checkout_order = {
 
 def checkout_order():
     logger_coffee.info(f"Checking out the order")
+    basket = st.session_state.basket
+    for item in basket:
+        logger_coffee.info(f"{item['quantity']}x {item['product_name']}")
+    st.session_state.basket = []
 
-    return {
-        "result": "OK"
-    }
+    return "OK"
 
 
 def_suggest_coffee_based_on_description = {

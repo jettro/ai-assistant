@@ -20,6 +20,17 @@ class Thread:
         for message in messages:
             logger_thread.info(f"Message: {message}")
 
+    def load_messages(self, limit: int = 10, before: str = None):
+        messages = self.client.beta.threads.messages.list(self.thread_id, limit=limit, before=before)
+
+        chat_messages = []
+        for message in messages:
+            content = message.content[0].text.value
+            role = message.role
+            chat_messages.append({"role": role, "content": content})
+
+        return chat_messages
+
     def add_new_message(self, message: str):
         logger_thread.debug(f"Adding message '{message}' to thread {self.thread_id}")
         thread_message = self.client.beta.threads.messages.create(thread_id=self.thread_id, role="user",
